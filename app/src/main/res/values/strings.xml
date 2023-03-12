@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Mobile_Cw_1</string>
+    <string name="main_image">main image</string>
+    <string name="new_game">New Game</string>
+    <string name="about">About</string>
+    <string name="set_the_target_value_for_the_game_default_value_is_set_to_101_leave_it_empty_to_keep_the_default_value">Set the target value for the game.Default value is set to 101.Leave it empty to keep the default value.</string>
+    <string name="enter_target_value">Enter target value</string>
+    <string name="score">Score</string>
+    <string name="Throw">Throw</string>
+</resources>
