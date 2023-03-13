@@ -1,10 +1,12 @@
 package com.example.mobile_cw_1
 
 import android.content.Intent
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.Window
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -12,9 +14,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
+    lateinit var mediaPlayer : MediaPlayer
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        mediaPlayer = MediaPlayer.create(this, R.raw.starting_music)
+        mediaPlayer.setVolume(0.25f, 0.25f)
+        mediaPlayer.isLooping = true
+        mediaPlayer.start()
     }
 
     fun aboutClicked(view: View) {
@@ -72,5 +79,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
         dialog.show()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mediaPlayer.pause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mediaPlayer.start()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.stop()
+        mediaPlayer.release()
     }
 }

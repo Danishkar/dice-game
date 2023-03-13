@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Looper
 import android.view.LayoutInflater
@@ -48,41 +49,51 @@ class NewGame : AppCompatActivity() {
 
     lateinit var totalWin : TextView
 
+    lateinit var mediaPlayer : MediaPlayer
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_game)
+        mediaPlayer = MediaPlayer.create(this, R.raw.game_music2)
+        mediaPlayer.isLooping = true
+        mediaPlayer.start()
 
-//        initializing the dice images
+//        initializing human dice images
         hDice1 = findViewById(R.id.humanImageButton1)
         hDice2 = findViewById(R.id.humanImageButton2)
         hDice3 = findViewById(R.id.humanImageButton3)
         hDice4 = findViewById(R.id.humanImageButton4)
         hDice5 = findViewById(R.id.humanImageButton5)
+//        initializing throw button
         Throw = findViewById(R.id.Throw)
+//        initializing score button
         score = findViewById(R.id.score)
         score.isEnabled = false
+//        initializing reRoll button
         reRoll = findViewById(R.id.reRolls)
         reRoll.isEnabled = false
+//        initialiZing score board
         scoreBoard = findViewById(R.id.scoreBoard)
+//        making the human images not clickable
         toggleFunctionalityOfHumanImage(false)
-
+//        Array to store the human generated random no
         humanRandomNoArr = IntArray(5)
-
+//        initializing computer dice images
         cDice1 = findViewById(R.id.compImageButton1)
         cDice2 = findViewById(R.id.compImageButton2)
         cDice3 = findViewById(R.id.compImageButton3)
         cDice4 = findViewById(R.id.compImageButton4)
         cDice5 = findViewById(R.id.compImageButton5)
-
+//        Array to store the computer generated random no
         compRandomNoArr = IntArray(5)
 
-//        check how it works
+//        getting the target value from the bundle object
         val bundle = intent.extras
         targetValue = bundle?.getInt("intValue",0)!!
-        Toast.makeText(this, "$targetValue", Toast.LENGTH_SHORT).show()
-
+//        initializing total win variable
         totalWin = findViewById(R.id.totalWinBoard)
+//        initializing score variables
         var humanTotalWins = MyArraySingleton.totalScoreArr[0]
         var compTotalWins = MyArraySingleton.totalScoreArr[1]
 
@@ -123,18 +134,20 @@ class NewGame : AppCompatActivity() {
         cDice5.setImageResource(getImage(compRandomNoArr[4]))
     }
     private fun getRandomHumanDiceNumber() : Int {
-        var randomInt: Int
-        do {
-            randomInt = (1..6).random()
-        } while (humanRandomNoArr.count { it == randomInt } >= 2)
+//        var randomInt: Int
+//        do {
+//            randomInt = (1..6).random()
+//        } while (humanRandomNoArr.count { it == randomInt } >= 2)
+        var randomInt = (1..6).random()
         return randomInt
     }
 
     private fun getRandomCompDiceNumber() : Int {
-        var randomInt: Int
-        do {
-            randomInt = (1..6).random()
-        } while (compRandomNoArr.count { it == randomInt } >= 2)
+//        var randomInt: Int
+//        do {
+//            randomInt = (1..6).random()
+//        } while (compRandomNoArr.count { it == randomInt } >= 2)
+        var randomInt = (1..6).random()
         return randomInt
     }
 
@@ -150,7 +163,7 @@ class NewGame : AppCompatActivity() {
         return drawableResource
     }
 
-    private fun getImageWithTick(randomInt:Int):Int{
+    private fun getImageWithSelection(randomInt:Int):Int{
         val drawableResource = when (randomInt) {
             1 -> R.drawable.die_face_1_selected
             2 -> R.drawable.die_face_2_selected
@@ -186,7 +199,9 @@ class NewGame : AppCompatActivity() {
                     }
                 }
             }
+
             toggleFunctionalityOfHumanImage(false)
+
             val handler = HandlerCompat.createAsync(Looper.getMainLooper())
             handler.postDelayed({
                 for (i in reRollArr.indices) {
@@ -211,7 +226,7 @@ class NewGame : AppCompatActivity() {
                 val handler = HandlerCompat.createAsync(Looper.getMainLooper())
                 handler.postDelayed({
                     score.performClick()
-                }, 2000)
+                }, 500)
             }else{
                 Throw.isEnabled = false
                 score.isEnabled = true
@@ -256,23 +271,23 @@ class NewGame : AppCompatActivity() {
     }
 
     fun humanImg1Clicked(view: View) {
-        hDice1.setImageResource(getImageWithTick(humanRandomNoArr[0]))
+        hDice1.setImageResource(getImageWithSelection(humanRandomNoArr[0]))
         reRollArr[0] = 1
     }
     fun humanImg2Clicked(view: View) {
-        hDice2.setImageResource(getImageWithTick(humanRandomNoArr[1]))
+        hDice2.setImageResource(getImageWithSelection(humanRandomNoArr[1]))
         reRollArr[1] = 1
     }
     fun humanImg3Clicked(view: View) {
-        hDice3.setImageResource(getImageWithTick(humanRandomNoArr[2]))
+        hDice3.setImageResource(getImageWithSelection(humanRandomNoArr[2]))
         reRollArr[2] = 1
     }
     fun humanImg4Clicked(view: View) {
-        hDice4.setImageResource(getImageWithTick(humanRandomNoArr[3]))
+        hDice4.setImageResource(getImageWithSelection(humanRandomNoArr[3]))
         reRollArr[3] = 1
     }
     fun humanImg5Clicked(view: View) {
-        hDice5.setImageResource(getImageWithTick(humanRandomNoArr[4]))
+        hDice5.setImageResource(getImageWithSelection(humanRandomNoArr[4]))
         reRollArr[4] = 1
     }
 
@@ -302,9 +317,9 @@ class NewGame : AppCompatActivity() {
         }
 
         scoreBoard.setText("$humanMainTotal        -        $compMainTotal")
-        Toast.makeText(this, "Score has been calculated", Toast.LENGTH_SHORT).show()
 
         var gameOver = false
+
         val builder = AlertDialog.Builder(this)
         val inflater = LayoutInflater.from(this)
         val view1 = inflater.inflate(R.layout.final_result_layout, null)
@@ -387,7 +402,6 @@ class NewGame : AppCompatActivity() {
 
     private fun compReRoll(){
         var bool = compDecisionOnReRoll()
-//        Toast.makeText(this, "comp Re ROll $bool", Toast.LENGTH_SHORT).show()
         if(bool){
             var compReRollArr = IntArray(5)
             for (i in compReRollArr.indices){
@@ -417,31 +431,20 @@ class NewGame : AppCompatActivity() {
         }
 
     }
-    fun toggleImageView(bool:Boolean){
-        if(bool){
-            gifImage.visibility = View.GONE
-            hDice1.visibility = View.VISIBLE
-            hDice2.visibility = View.VISIBLE
-            hDice3.visibility = View.VISIBLE
-            hDice4.visibility = View.VISIBLE
-            hDice5.visibility = View.VISIBLE
-            cDice1.visibility = View.VISIBLE
-            cDice2.visibility = View.VISIBLE
-            cDice3.visibility = View.VISIBLE
-            cDice4.visibility = View.VISIBLE
-            cDice5.visibility = View.VISIBLE
-        }else{
-            gifImage.visibility = View.VISIBLE
-            hDice1.visibility = View.INVISIBLE
-            hDice2.visibility = View.INVISIBLE
-            hDice3.visibility = View.INVISIBLE
-            hDice4.visibility = View.INVISIBLE
-            hDice5.visibility = View.INVISIBLE
-            cDice1.visibility = View.INVISIBLE
-            cDice2.visibility = View.INVISIBLE
-            cDice3.visibility = View.INVISIBLE
-            cDice4.visibility = View.INVISIBLE
-            cDice5.visibility = View.INVISIBLE
-        }
+
+    override fun onPause() {
+        super.onPause()
+        mediaPlayer.pause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mediaPlayer.start()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.stop()
+        mediaPlayer.release()
     }
 }
