@@ -7,20 +7,21 @@
 
     <EditText
         android:id="@+id/editText"
-        android:layout_width="307dp"
+        android:layout_width="306dp"
         android:layout_height="50dp"
-        android:layout_marginTop="84dp"
-        android:hint="@string/enter_target_value"
+        android:layout_marginTop="52dp"
+        android:hint="101"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/defaultButton"
         android:layout_width="293dp"
-        android:layout_height="46dp"
-        android:layout_marginTop="140dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="108dp"
         android:text="OK"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,9 +30,9 @@
     <TextView
         android:id="@+id/defaultMessage"
         android:layout_width="306dp"
-        android:layout_height="52dp"
+        android:layout_height="20dp"
         android:layout_marginTop="32dp"
-        android:text="@string/set_the_target_value_for_the_game_default_value_is_set_to_101_leave_it_empty_to_keep_the_default_value"
+        android:text="Enter the target value. Default value is set to 101. "
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"

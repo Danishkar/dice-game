@@ -2,10 +2,7 @@ package com.example.mobile_cw_1
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Looper
@@ -18,7 +15,6 @@ import androidx.core.os.HandlerCompat
 
 
 class NewGame : AppCompatActivity() {
-    lateinit var gifImage : ImageView
     lateinit var hDice1 : ImageButton
     lateinit var hDice2 : ImageButton
     lateinit var hDice3 : ImageButton
@@ -176,8 +172,11 @@ class NewGame : AppCompatActivity() {
     }
     fun throwButtonClicked(view: View) {
         if (reRollPressed){
+
+//            new computer strategy
+            compReRollStrategy()
 //            for the comp player strategy
-            compReRoll()
+//            compReRoll()
             reRoll.isEnabled = reRollsCount != 0
             for (i in reRollArr.indices) {
                 if (reRollArr[i] == 0) {
@@ -294,10 +293,15 @@ class NewGame : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     fun scoreButtonClicked(view: View) {
         if(reRollsCount == 2){
-            compReRoll()
-            compReRoll()
+//            new computer strategy
+            compReRollStrategy()
+            compReRollStrategy()
+//            compReRoll()
+//            compReRoll()
         }else if(reRollsCount == 1){
-            compReRoll()
+//            new computer strategy
+            compReRollStrategy()
+//            compReRoll()
         }
 
         reRollsCount = 2
@@ -332,6 +336,8 @@ class NewGame : AppCompatActivity() {
 
         if(humanMainTotal >= targetValue && compMainTotal >= targetValue){
             if(humanMainTotal > compMainTotal){
+                title.setText("You Win!")
+                title.setTextColor(Color.GREEN)
                 message.setText("Congratulations, you have reached more than $targetValue points!")
                 MyArraySingleton.increHumanValue()
                 gameOver = true
@@ -346,10 +352,13 @@ class NewGame : AppCompatActivity() {
                 gameOver = true
             }
         }else if(humanMainTotal>= targetValue){
+            title.setText("You Win!")
+            title.setTextColor(Color.GREEN)
             message.setText("Congratulations, you have reached more than $targetValue points!")
             MyArraySingleton.increHumanValue()
             gameOver = true
         }else if(compMainTotal >= targetValue){
+            title.setText("You Lose!")
             title.setTextColor(Color.RED)
             message.setText("Better luck next time!!")
             MyArraySingleton.increCompValue()
@@ -375,18 +384,21 @@ class NewGame : AppCompatActivity() {
         reRoll.isEnabled = false
         score.isEnabled = false
 
-        hDice1.setImageResource(R.drawable.throwing)
-        hDice2.setImageResource(R.drawable.throwing)
-        hDice3.setImageResource(R.drawable.throwing)
-        hDice4.setImageResource(R.drawable.throwing)
-        hDice5.setImageResource(R.drawable.throwing)
+        val handler = HandlerCompat.createAsync(Looper.getMainLooper())
+        handler.postDelayed({
+            hDice1.setImageResource(R.drawable.throwing)
+            hDice2.setImageResource(R.drawable.throwing)
+            hDice3.setImageResource(R.drawable.throwing)
+            hDice4.setImageResource(R.drawable.throwing)
+            hDice5.setImageResource(R.drawable.throwing)
 
-        cDice1.setImageResource(R.drawable.waiting2)
-        cDice2.setImageResource(R.drawable.waiting2)
-        cDice3.setImageResource(R.drawable.waiting2)
-        cDice4.setImageResource(R.drawable.waiting2)
-        cDice5.setImageResource(R.drawable.waiting2)
+            cDice1.setImageResource(R.drawable.waiting2)
+            cDice2.setImageResource(R.drawable.waiting2)
+            cDice3.setImageResource(R.drawable.waiting2)
+            cDice4.setImageResource(R.drawable.waiting2)
+            cDice5.setImageResource(R.drawable.waiting2)
 
+        }, 200)
     }
     private fun compDecisionOnReRoll():Boolean{
         var bool : Boolean
@@ -430,6 +442,35 @@ class NewGame : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun compReRollStrategy(){
+        var compReRollArr = IntArray(5)
+        for ( i in compRandomNoArr.indices){
+            if(compRandomNoArr[i] < 4){
+                compReRollArr[i] = 1
+            }
+        }
+        for ( i in compReRollArr.indices){
+            if(compReRollArr[i] == 1){
+                if( i+1 == 1 ){
+                    compRandomNoArr[0] = getRandomCompDiceNumber()
+                    cDice1.setImageResource(getImage(compRandomNoArr[0]))
+                }else if(i+1 == 2){
+                    compRandomNoArr[1] = getRandomCompDiceNumber()
+                    cDice2.setImageResource(getImage(compRandomNoArr[1]))
+                }else if(i+1 == 3){
+                    compRandomNoArr[2] = getRandomCompDiceNumber()
+                    cDice3.setImageResource(getImage(compRandomNoArr[2]))
+                }else if(i+1 == 4){
+                    compRandomNoArr[3] = getRandomCompDiceNumber()
+                    cDice4.setImageResource(getImage(compRandomNoArr[3]))
+                }else if(i+1 == 5){
+                    compRandomNoArr[4] = getRandomCompDiceNumber()
+                    cDice5.setImageResource(getImage(compRandomNoArr[4]))
+                }
+            }
+        }
     }
 
     override fun onPause() {
