@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        supportActionBar?.hide()
         mediaPlayer = MediaPlayer.create(this, R.raw.starting_music)
         mediaPlayer.setVolume(0.25f, 0.25f)
         mediaPlayer.isLooping = true

@@ -20,8 +20,13 @@ class NewGame : AppCompatActivity() {
     lateinit var hDice3 : ImageButton
     lateinit var hDice4 : ImageButton
     lateinit var hDice5 : ImageButton
+    var hDice1Resource : Int = R.drawable.throwing
+    var hDice2Resource : Int = R.drawable.throwing
+    var hDice3Resource : Int = R.drawable.throwing
+    var hDice4Resource : Int = R.drawable.throwing
+    var hDice5Resource : Int = R.drawable.throwing
     lateinit var humanRandomNoArr : IntArray
-    lateinit var reRollArr : IntArray
+    var reRollArr : IntArray  = IntArray(5)
     lateinit var Throw : Button
     lateinit var score : Button
     lateinit var reRoll : Button
@@ -36,6 +41,11 @@ class NewGame : AppCompatActivity() {
     lateinit var cDice3 : ImageButton
     lateinit var cDice4 : ImageButton
     lateinit var cDice5 : ImageButton
+    var cDice1Resource : Int = R.drawable.waiting2
+    var cDice2Resource : Int = R.drawable.waiting2
+    var cDice3Resource : Int = R.drawable.waiting2
+    var cDice4Resource : Int = R.drawable.waiting2
+    var cDice5Resource : Int = R.drawable.waiting2
     lateinit var compRandomNoArr : IntArray
     var compMainTotal :Int = 0
 
@@ -51,6 +61,7 @@ class NewGame : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_game)
+        supportActionBar?.hide()
         mediaPlayer = MediaPlayer.create(this, R.raw.game_music2)
         mediaPlayer.isLooping = true
         mediaPlayer.start()
@@ -94,6 +105,83 @@ class NewGame : AppCompatActivity() {
         var compTotalWins = MyArraySingleton.totalScoreArr[1]
 
         totalWin.setText("H:$humanTotalWins        /        C:$compTotalWins")
+
+        if (savedInstanceState != null) {
+            humanRandomNoArr = savedInstanceState.getIntArray("Human_Random_No_Arr")!!
+            compRandomNoArr = savedInstanceState.getIntArray("Computer_Random_No_Arr")!!
+            hDice1.setImageResource(savedInstanceState.getInt("Human_Dice_1_Resource"))
+            hDice1Resource = savedInstanceState.getInt("Human_Dice_1_Resource")
+            hDice2.setImageResource(savedInstanceState.getInt("Human_Dice_2_Resource"))
+            hDice2Resource = savedInstanceState.getInt("Human_Dice_2_Resource")
+            hDice3.setImageResource(savedInstanceState.getInt("Human_Dice_3_Resource"))
+            hDice3Resource = savedInstanceState.getInt("Human_Dice_3_Resource")
+            hDice4.setImageResource(savedInstanceState.getInt("Human_Dice_4_Resource"))
+            hDice4Resource = savedInstanceState.getInt("Human_Dice_4_Resource")
+            hDice5.setImageResource(savedInstanceState.getInt("Human_Dice_5_Resource"))
+            hDice5Resource = savedInstanceState.getInt("Human_Dice_5_Resource")
+
+            toggleFunctionalityOfHumanImage(savedInstanceState.getBoolean("Toggle_Functionality_Of_Human_Image"))
+
+            cDice1.setImageResource(savedInstanceState.getInt("Computer_Dice_1_Resource"))
+            cDice1Resource = savedInstanceState.getInt("Computer_Dice_1_Resource")
+            cDice2.setImageResource(savedInstanceState.getInt("Computer_Dice_2_Resource"))
+            cDice2Resource = savedInstanceState.getInt("Computer_Dice_2_Resource")
+            cDice3.setImageResource(savedInstanceState.getInt("Computer_Dice_3_Resource"))
+            cDice3Resource = savedInstanceState.getInt("Computer_Dice_3_Resource")
+            cDice4.setImageResource(savedInstanceState.getInt("Computer_Dice_4_Resource"))
+            cDice4Resource = savedInstanceState.getInt("Computer_Dice_4_Resource")
+            cDice5.setImageResource(savedInstanceState.getInt("Computer_Dice_5_Resource"))
+            cDice5Resource = savedInstanceState.getInt("Computer_Dice_5_Resource")
+
+            Throw.isEnabled = savedInstanceState.getBoolean("Throw_Is_Enabled")
+            reRollsCount = savedInstanceState.getInt("ReRolls_Count")
+            reRollArr = savedInstanceState.getIntArray("ReRoll_Array")!!
+            reRoll.isEnabled =savedInstanceState.getBoolean("ReRoll_Is_Enabled")
+            reRoll.text = savedInstanceState.getString("ReRoll_Text")
+            reRollPressed = savedInstanceState.getBoolean("ReRoll_Pressed")
+            score.isEnabled = savedInstanceState.getBoolean("Score_Is_Enabled")
+            humanMainTotal = savedInstanceState.getInt("Human_Main_Total")
+            compMainTotal = savedInstanceState.getInt("Computer_Main_Total")
+            scoreBoard.text = savedInstanceState.getString("Score_Board")
+            scoreBoard.setTextColor(savedInstanceState.getInt("Score_Board_Color"))
+
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putIntArray("Human_Random_No_Arr",humanRandomNoArr)
+        outState.putIntArray("Computer_Random_No_Arr",compRandomNoArr)
+        outState.putInt("Human_Dice_1_Resource",hDice1Resource)
+        outState.putInt("Human_Dice_2_Resource",hDice2Resource)
+        outState.putInt("Human_Dice_3_Resource",hDice3Resource)
+        outState.putInt("Human_Dice_4_Resource",hDice4Resource)
+        outState.putInt("Human_Dice_5_Resource",hDice5Resource)
+
+        if(hDice1.isEnabled){
+            outState.putBoolean("Toggle_Functionality_Of_Human_Image",true)
+        }else{
+            outState.putBoolean("Toggle_Functionality_Of_Human_Image",false)
+        }
+
+        outState.putInt("Computer_Dice_1_Resource",cDice1Resource)
+        outState.putInt("Computer_Dice_2_Resource",cDice2Resource)
+        outState.putInt("Computer_Dice_3_Resource",cDice3Resource)
+        outState.putInt("Computer_Dice_4_Resource",cDice4Resource)
+        outState.putInt("Computer_Dice_5_Resource",cDice5Resource)
+
+        outState.putBoolean("Throw_Is_Enabled", Throw.isEnabled)
+        outState.putInt("ReRolls_Count",reRollsCount)
+        outState.putIntArray("ReRoll_Array",reRollArr)
+        outState.putBoolean("ReRoll_Is_Enabled", reRoll.isEnabled)
+        outState.putString("ReRoll_Text", reRoll.text.toString())
+        outState.putBoolean("ReRoll_Pressed",reRollPressed)
+        outState.putBoolean("Score_Is_Enabled", score.isEnabled)
+        outState.getInt("Human_Main_Total",humanMainTotal)
+        outState.getInt("Computer_Main_Total",compMainTotal)
+        outState.putString("Score_Board",scoreBoard.text.toString())
+        outState.putInt("Score_Board_Color",scoreBoard.currentTextColor)
+
     }
 
     private fun toggleFunctionalityOfHumanImage(bool : Boolean){
@@ -107,27 +195,45 @@ class NewGame : AppCompatActivity() {
     private fun rollHumanDice() {
         humanRandomNoArr[0] = getRandomHumanDiceNumber()
         hDice1.setImageResource(getImage(humanRandomNoArr[0]))
+        hDice1Resource = getImage(humanRandomNoArr[0])
+
         humanRandomNoArr[1] = getRandomHumanDiceNumber()
         hDice2.setImageResource(getImage(humanRandomNoArr[1]))
+        hDice2Resource = getImage(humanRandomNoArr[1])
+
         humanRandomNoArr[2] = getRandomHumanDiceNumber()
         hDice3.setImageResource(getImage(humanRandomNoArr[2]))
+        hDice3Resource = getImage(humanRandomNoArr[2])
+
         humanRandomNoArr[3] = getRandomHumanDiceNumber()
         hDice4.setImageResource(getImage(humanRandomNoArr[3]))
+        hDice4Resource = getImage(humanRandomNoArr[3])
+
         humanRandomNoArr[4] = getRandomHumanDiceNumber()
         hDice5.setImageResource(getImage(humanRandomNoArr[4]))
+        hDice5Resource = getImage(humanRandomNoArr[4])
     }
 
     private fun rollCompDice() {
         compRandomNoArr[0] = getRandomCompDiceNumber()
         cDice1.setImageResource(getImage(compRandomNoArr[0]))
+        cDice1Resource = getImage(compRandomNoArr[0])
+
         compRandomNoArr[1] = getRandomCompDiceNumber()
         cDice2.setImageResource(getImage(compRandomNoArr[1]))
+        cDice2Resource = getImage(compRandomNoArr[1])
+
         compRandomNoArr[2] = getRandomCompDiceNumber()
         cDice3.setImageResource(getImage(compRandomNoArr[2]))
+        cDice3Resource = getImage(compRandomNoArr[2])
+
         compRandomNoArr[3] = getRandomCompDiceNumber()
         cDice4.setImageResource(getImage(compRandomNoArr[3]))
+        cDice4Resource = getImage(compRandomNoArr[3])
+
         compRandomNoArr[4] = getRandomCompDiceNumber()
         cDice5.setImageResource(getImage(compRandomNoArr[4]))
+        cDice5Resource = getImage(compRandomNoArr[4])
     }
     private fun getRandomHumanDiceNumber() : Int {
 //        var randomInt: Int
@@ -183,18 +289,23 @@ class NewGame : AppCompatActivity() {
                     if( i+1 == 1 ){
                         humanRandomNoArr[0] = getRandomHumanDiceNumber()
                         hDice1.setImageResource(getImage(humanRandomNoArr[0]))
+                        hDice1Resource = getImage(humanRandomNoArr[0])
                     }else if(i+1 == 2){
                         humanRandomNoArr[1] = getRandomHumanDiceNumber()
                         hDice2.setImageResource(getImage(humanRandomNoArr[1]))
+                        hDice2Resource = getImage(humanRandomNoArr[1])
                     }else if(i+1 == 3){
                         humanRandomNoArr[2] = getRandomHumanDiceNumber()
                         hDice3.setImageResource(getImage(humanRandomNoArr[2]))
+                        hDice3Resource = getImage(humanRandomNoArr[2])
                     }else if(i+1 == 4){
                         humanRandomNoArr[3] = getRandomHumanDiceNumber()
                         hDice4.setImageResource(getImage(humanRandomNoArr[3]))
+                        hDice4Resource = getImage(humanRandomNoArr[3])
                     }else if(i+1 == 5){
                         humanRandomNoArr[4] = getRandomHumanDiceNumber()
                         hDice5.setImageResource(getImage(humanRandomNoArr[4]))
+                        hDice5Resource = getImage(humanRandomNoArr[4])
                     }
                 }
             }
@@ -207,14 +318,19 @@ class NewGame : AppCompatActivity() {
                     if (reRollArr[i] == 1) {
                         if( i+1 == 1 ){
                             hDice1.setImageResource(getImage(humanRandomNoArr[0]))
+                            hDice1Resource = getImage(humanRandomNoArr[0])
                         }else if(i+1 == 2){
                             hDice2.setImageResource(getImage(humanRandomNoArr[1]))
+                            hDice2Resource = getImage(humanRandomNoArr[1])
                         }else if(i+1 == 3){
                             hDice3.setImageResource(getImage(humanRandomNoArr[2]))
+                            hDice3Resource = getImage(humanRandomNoArr[2])
                         }else if(i+1 == 4){
                             hDice4.setImageResource(getImage(humanRandomNoArr[3]))
+                            hDice4Resource = getImage(humanRandomNoArr[3])
                         }else if(i+1 == 5){
                             hDice5.setImageResource(getImage(humanRandomNoArr[4]))
+                            hDice5Resource = getImage(humanRandomNoArr[4])
                         }
                     }
 
@@ -271,22 +387,27 @@ class NewGame : AppCompatActivity() {
 
     fun humanImg1Clicked(view: View) {
         hDice1.setImageResource(getImageWithSelection(humanRandomNoArr[0]))
+        hDice1Resource = getImageWithSelection(humanRandomNoArr[0])
         reRollArr[0] = 1
     }
     fun humanImg2Clicked(view: View) {
         hDice2.setImageResource(getImageWithSelection(humanRandomNoArr[1]))
+        hDice2Resource = getImageWithSelection(humanRandomNoArr[1])
         reRollArr[1] = 1
     }
     fun humanImg3Clicked(view: View) {
         hDice3.setImageResource(getImageWithSelection(humanRandomNoArr[2]))
+        hDice3Resource = getImageWithSelection(humanRandomNoArr[2])
         reRollArr[2] = 1
     }
     fun humanImg4Clicked(view: View) {
         hDice4.setImageResource(getImageWithSelection(humanRandomNoArr[3]))
+        hDice4Resource = getImageWithSelection(humanRandomNoArr[3])
         reRollArr[3] = 1
     }
     fun humanImg5Clicked(view: View) {
         hDice5.setImageResource(getImageWithSelection(humanRandomNoArr[4]))
+        hDice5Resource = getImageWithSelection(humanRandomNoArr[4])
         reRollArr[4] = 1
     }
 
@@ -387,18 +508,28 @@ class NewGame : AppCompatActivity() {
         val handler = HandlerCompat.createAsync(Looper.getMainLooper())
         handler.postDelayed({
             hDice1.setImageResource(R.drawable.throwing)
+            hDice1Resource = R.drawable.throwing
             hDice2.setImageResource(R.drawable.throwing)
+            hDice2Resource = R.drawable.throwing
             hDice3.setImageResource(R.drawable.throwing)
+            hDice3Resource = R.drawable.throwing
             hDice4.setImageResource(R.drawable.throwing)
+            hDice4Resource = R.drawable.throwing
             hDice5.setImageResource(R.drawable.throwing)
+            hDice5Resource = R.drawable.throwing
 
             cDice1.setImageResource(R.drawable.waiting2)
+            cDice1Resource = R.drawable.waiting2
             cDice2.setImageResource(R.drawable.waiting2)
+            cDice2Resource = R.drawable.waiting2
             cDice3.setImageResource(R.drawable.waiting2)
+            cDice3Resource = R.drawable.waiting2
             cDice4.setImageResource(R.drawable.waiting2)
+            cDice4Resource = R.drawable.waiting2
             cDice5.setImageResource(R.drawable.waiting2)
+            cDice5Resource = R.drawable.waiting2
 
-        }, 200)
+        }, 400)
     }
     private fun compDecisionOnReRoll():Boolean{
         var bool : Boolean
@@ -425,18 +556,23 @@ class NewGame : AppCompatActivity() {
                     if( i+1 == 1 ){
                         compRandomNoArr[0] = getRandomCompDiceNumber()
                         cDice1.setImageResource(getImage(compRandomNoArr[0]))
+                        cDice1Resource = getImage(compRandomNoArr[0])
                     }else if(i+1 == 2){
                         compRandomNoArr[1] = getRandomCompDiceNumber()
                         cDice2.setImageResource(getImage(compRandomNoArr[1]))
+                        cDice2Resource = getImage(compRandomNoArr[1])
                     }else if(i+1 == 3){
                         compRandomNoArr[2] = getRandomCompDiceNumber()
                         cDice3.setImageResource(getImage(compRandomNoArr[2]))
+                        cDice3Resource = getImage(compRandomNoArr[2])
                     }else if(i+1 == 4){
                         compRandomNoArr[3] = getRandomCompDiceNumber()
                         cDice4.setImageResource(getImage(compRandomNoArr[3]))
+                        cDice4Resource = getImage(compRandomNoArr[3])
                     }else if(i+1 == 5){
                         compRandomNoArr[4] = getRandomCompDiceNumber()
                         cDice5.setImageResource(getImage(compRandomNoArr[4]))
+                        cDice5Resource = getImage(compRandomNoArr[4])
                     }
                 }
             }
@@ -456,18 +592,23 @@ class NewGame : AppCompatActivity() {
                 if( i+1 == 1 ){
                     compRandomNoArr[0] = getRandomCompDiceNumber()
                     cDice1.setImageResource(getImage(compRandomNoArr[0]))
+                    cDice1Resource = getImage(compRandomNoArr[0])
                 }else if(i+1 == 2){
                     compRandomNoArr[1] = getRandomCompDiceNumber()
                     cDice2.setImageResource(getImage(compRandomNoArr[1]))
+                    cDice2Resource = getImage(compRandomNoArr[1])
                 }else if(i+1 == 3){
                     compRandomNoArr[2] = getRandomCompDiceNumber()
                     cDice3.setImageResource(getImage(compRandomNoArr[2]))
+                    cDice3Resource = getImage(compRandomNoArr[2])
                 }else if(i+1 == 4){
                     compRandomNoArr[3] = getRandomCompDiceNumber()
                     cDice4.setImageResource(getImage(compRandomNoArr[3]))
+                    cDice4Resource = getImage(compRandomNoArr[3])
                 }else if(i+1 == 5){
                     compRandomNoArr[4] = getRandomCompDiceNumber()
                     cDice5.setImageResource(getImage(compRandomNoArr[4]))
+                    cDice5Resource = getImage(compRandomNoArr[4])
                 }
             }
         }

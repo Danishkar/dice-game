@@ -5,4 +5,5 @@
     <string name="about">About</string>
     <string name="score">Score</string>
     <string name="Throw">Throw</string>
+    <string name="game_of_dice">Game of Dice</string>
 </resources>
