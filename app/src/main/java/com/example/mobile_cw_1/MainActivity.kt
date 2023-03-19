@@ -1,5 +1,6 @@
 package com.example.mobile_cw_1
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
@@ -35,28 +36,37 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    @SuppressLint("MissingInflatedId")
     fun newGameClicked(view: View) {
         val builder = AlertDialog.Builder(this)
         val inflater = LayoutInflater.from(this)
         val view1 = inflater.inflate(R.layout.default_value_layout, null)
         builder.setView(view1)
-
         val editText = view1.findViewById<EditText>(R.id.editText)
-        val button = view1.findViewById<Button>(R.id.defaultButton)
+        val defaultButton = view1.findViewById<Button>(R.id.defaultButton)
         val errorMessage = view1.findViewById<TextView>(R.id.defaultErrorMessage)
-        val dialog = builder.create()
+        val defaultDialog = builder.create()
         var validInt : Boolean = false
+        defaultDialog.show()
 
-        button.setOnClickListener {
+        val builder2 = AlertDialog.Builder(this)
+        val inflater2 = LayoutInflater.from(this)
+        val view2 = inflater2.inflate(R.layout.mode_layout, null)
+        builder2.setView(view2)
+        val easyButton = view2.findViewById<Button>(R.id.easyMode)
+        val hardButton = view2.findViewById<Button>(R.id.hardMode)
+        val modeDialog = builder2.create()
+
+        var defaultValue : Int = 0
+        defaultButton.setOnClickListener {
             // Get the text from the edit text
             errorMessage.setText("")
             val userText = editText.text.toString()
-            var defaultValue : Int = 0
             var userInt = userText.toIntOrNull()
             if(userText == ""){
                 defaultValue = 101
                 validInt = true
-                dialog.dismiss()
+                defaultDialog.dismiss()
 
             }else{
                 if (userInt == null) {
@@ -66,20 +76,33 @@ class MainActivity : AppCompatActivity() {
                     if (userInt != null) {
                         defaultValue = userInt
                         validInt = true
-                        dialog.dismiss()
+                        defaultDialog.dismiss()
                     }
                 }
             }
-
+            modeDialog.show()
+        }
+        easyButton.setOnClickListener{
             val bundle = Bundle()
             bundle.putInt("intValue",defaultValue)
+            bundle.putString("gameMode","easy")
             if (validInt){
                 val newGameIntent = Intent(this,NewGame::class.java)
                 newGameIntent.putExtras(bundle)
                 startActivity(newGameIntent)
             }
         }
-        dialog.show()
+        hardButton.setOnClickListener{
+            val bundle = Bundle()
+            bundle.putInt("intValue",defaultValue)
+            bundle.putString("gameMode","hard")
+            if (validInt){
+                val newGameIntent = Intent(this,NewGame::class.java)
+                newGameIntent.putExtras(bundle)
+                startActivity(newGameIntent)
+            }
+        }
+
     }
 
     override fun onPause() {
