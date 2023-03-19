@@ -57,6 +57,8 @@ class NewGame : AppCompatActivity() {
 
     lateinit var mediaPlayer : MediaPlayer
 
+    var gameMode : String = ""
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,6 +100,9 @@ class NewGame : AppCompatActivity() {
 //        getting the target value from the bundle object
         val bundle = intent.extras
         targetValue = bundle?.getInt("intValue",0)!!
+        gameMode = bundle?.getString("gameMode")!!
+        Toast.makeText(this, "$gameMode", Toast.LENGTH_SHORT).show()
+
 //        initializing total win variable
         totalWin = findViewById(R.id.totalWinBoard)
 //        initializing score variables
@@ -177,8 +182,8 @@ class NewGame : AppCompatActivity() {
         outState.putString("ReRoll_Text", reRoll.text.toString())
         outState.putBoolean("ReRoll_Pressed",reRollPressed)
         outState.putBoolean("Score_Is_Enabled", score.isEnabled)
-        outState.getInt("Human_Main_Total",humanMainTotal)
-        outState.getInt("Computer_Main_Total",compMainTotal)
+        outState.putInt("Human_Main_Total",humanMainTotal)
+        outState.putInt("Computer_Main_Total",compMainTotal)
         outState.putString("Score_Board",scoreBoard.text.toString())
         outState.putInt("Score_Board_Color",scoreBoard.currentTextColor)
 
@@ -278,11 +283,13 @@ class NewGame : AppCompatActivity() {
     }
     fun throwButtonClicked(view: View) {
         if (reRollPressed){
-
+            if(gameMode == "hard"){
 //            new computer strategy
-            compReRollStrategy()
-//            for the comp player strategy
-//            compReRoll()
+                compReRollStrategy()
+            }else{
+//            for the comp player strategy(Random)
+                compReRoll()
+            }
             reRoll.isEnabled = reRollsCount != 0
             for (i in reRollArr.indices) {
                 if (reRollArr[i] == 0) {
@@ -414,15 +421,23 @@ class NewGame : AppCompatActivity() {
     @SuppressLint("MissingInflatedId")
     fun scoreButtonClicked(view: View) {
         if(reRollsCount == 2){
+            if(gameMode == "hard"){
 //            new computer strategy
-            compReRollStrategy()
-            compReRollStrategy()
-//            compReRoll()
-//            compReRoll()
+                compReRollStrategy()
+                compReRollStrategy()
+            }else{
+//            for the comp player strategy(Random)
+                compReRoll()
+                compReRoll()
+            }
         }else if(reRollsCount == 1){
+            if(gameMode == "hard"){
 //            new computer strategy
-            compReRollStrategy()
-//            compReRoll()
+                compReRollStrategy()
+            }else{
+//            for the comp player strategy(Random)
+                compReRoll()
+            }
         }
 
         reRollsCount = 2
@@ -441,7 +456,7 @@ class NewGame : AppCompatActivity() {
             scoreBoard.setTextColor(Color.RED)
         }
 
-        scoreBoard.setText("$humanMainTotal        -        $compMainTotal")
+        scoreBoard.setText("H:$humanMainTotal        -        C:$compMainTotal")
 
         var gameOver = false
 
@@ -529,7 +544,7 @@ class NewGame : AppCompatActivity() {
             cDice5.setImageResource(R.drawable.waiting2)
             cDice5Resource = R.drawable.waiting2
 
-        }, 400)
+        }, 350)
     }
     private fun compDecisionOnReRoll():Boolean{
         var bool : Boolean
@@ -545,6 +560,7 @@ class NewGame : AppCompatActivity() {
 
     private fun compReRoll(){
         var bool = compDecisionOnReRoll()
+        Toast.makeText(this, "easy mode", Toast.LENGTH_SHORT).show()
         if(bool){
             var compReRollArr = IntArray(5)
             for (i in compReRollArr.indices){
@@ -581,6 +597,7 @@ class NewGame : AppCompatActivity() {
     }
 
     private fun compReRollStrategy(){
+        Toast.makeText(this, "hard mode", Toast.LENGTH_SHORT).show()
         var compReRollArr = IntArray(5)
         for ( i in compRandomNoArr.indices){
             if(compRandomNoArr[i] < 4){
