@@ -59,6 +59,11 @@ class NewGame : AppCompatActivity() {
 
     private var gameMode : String = ""
 
+    private var humanTotalWins : Int = 0
+    private var compTotalWins : Int = 0
+
+    private var gameRuleShown : Boolean = false
+
     @SuppressLint("MissingInflatedId", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,8 +111,11 @@ class NewGame : AppCompatActivity() {
 //        initializing total win variable
         totalWin = findViewById(R.id.totalWinBoard)
 //        initializing score variables
-        val humanTotalWins = MyArraySingleton.totalScoreArr[0]
-        val compTotalWins = MyArraySingleton.totalScoreArr[1]
+        humanTotalWins = bundle.getInt("humanTotalWins")
+        compTotalWins = bundle.getInt("compTotalWins")
+
+//        checks if the game rules are shown initially
+        gameRuleShown = bundle.getBoolean("gameRuleShown")
 
         totalWin.text = "H:$humanTotalWins        /        C:$compTotalWins"
 
@@ -161,10 +169,12 @@ class NewGame : AppCompatActivity() {
             scoreBoard.text = savedInstanceState.getString("Score_Board")
             scoreBoard.setTextColor(savedInstanceState.getInt("Score_Board_Color"))
 
+            gameRuleShown = savedInstanceState.getBoolean("Game_Rule_Shown")
+
         }
-        if(!MyArraySingleton.gameRuleShown){
+        if(!gameRuleShown){
             ruleDialog.show()
-            MyArraySingleton.toggleGameRule()
+            gameRuleShown = !gameRuleShown
         }
     }
 
@@ -201,6 +211,8 @@ class NewGame : AppCompatActivity() {
         outState.putInt("Computer_Main_Total",compMainTotal)
         outState.putString("Score_Board",scoreBoard.text.toString())
         outState.putInt("Score_Board_Color",scoreBoard.currentTextColor)
+
+        outState.putBoolean("Game_Rule_Shown",gameRuleShown)
 
     }
 
@@ -542,7 +554,7 @@ class NewGame : AppCompatActivity() {
                 title.text = "You Win!"
                 title.setTextColor(Color.GREEN)
                 message.text = "Congratulations, you have reached more than $targetValue points!"
-                MyArraySingleton.increHumanValue()
+                humanTotalWins += 1
                 gameOver = true
             }else if (humanMainTotal == compMainTotal){
                 tie = true
@@ -551,31 +563,38 @@ class NewGame : AppCompatActivity() {
                 title.text = "You Lose!"
                 title.setTextColor(Color.RED)
                 message.text = "Better luck next time!!"
-                MyArraySingleton.increCompValue()
+                compTotalWins += 1
                 gameOver = true
             }
         }else if(humanMainTotal>= targetValue){
             title.text = "You Win!"
             title.setTextColor(Color.GREEN)
             message.text = "Congratulations, you have reached more than $targetValue points!"
-            MyArraySingleton.increHumanValue()
+            humanTotalWins += 1
             gameOver = true
         }else if(compMainTotal >= targetValue){
             title.text = "You Lose!"
             title.setTextColor(Color.RED)
             message.text = "Better luck next time!!"
-            MyArraySingleton.increCompValue()
+            compTotalWins += 1
             gameOver = true
         }
 
         if (gameOver){
+            val bundle = Bundle()
+            bundle.putInt("humanTotalWins",humanTotalWins)
+            bundle.putInt("compTotalWins",compTotalWins)
+            bundle.putBoolean("gameRuleShown",gameRuleShown)
             dialog.show()
             back.setOnClickListener(){
                 val mainIntent = Intent(this, MainActivity::class.java)
+                mainIntent.putExtras(bundle)
                 startActivity(mainIntent)
+                finish()
             }
             dialog.setOnCancelListener {
                 val mainIntent = Intent(this, MainActivity::class.java)
+                mainIntent.putExtras(bundle)
                 startActivity(mainIntent)
                 finish()
             }
@@ -679,7 +698,6 @@ class NewGame : AppCompatActivity() {
                     compReRollArr[i] = 1
                 }
             }
-
         }
         for ( i in compReRollArr.indices){
             if(compReRollArr[i] == 1){

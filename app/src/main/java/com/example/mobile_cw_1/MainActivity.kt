@@ -16,6 +16,9 @@ import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mediaPlayer : MediaPlayer
+    private var humanTotalWins : Int = 0
+    private var compTotalWins : Int = 0
+    private var gameRuleShown :Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -24,6 +27,14 @@ class MainActivity : AppCompatActivity() {
         mediaPlayer.setVolume(0.25f, 0.25f)
         mediaPlayer.isLooping = true
         mediaPlayer.start()
+
+        val bundle = intent.extras
+        if (bundle != null && bundle.containsKey("humanTotalWins")) {
+            humanTotalWins = bundle.getInt("humanTotalWins")
+            compTotalWins = bundle.getInt("compTotalWins")
+            gameRuleShown = bundle.getBoolean("gameRuleShown")
+        }
+
     }
 
     fun aboutClicked(view: View) {
@@ -84,6 +95,9 @@ class MainActivity : AppCompatActivity() {
             val bundle = Bundle()
             bundle.putInt("intValue",defaultValue)
             bundle.putString("gameMode","easy")
+            bundle.putInt("humanTotalWins",humanTotalWins)
+            bundle.putInt("compTotalWins",compTotalWins)
+            bundle.putBoolean("gameRuleShown",gameRuleShown)
             if (validInt){
                 val newGameIntent = Intent(this,NewGame::class.java)
                 newGameIntent.putExtras(bundle)
@@ -95,6 +109,9 @@ class MainActivity : AppCompatActivity() {
             val bundle = Bundle()
             bundle.putInt("intValue",defaultValue)
             bundle.putString("gameMode","hard")
+            bundle.putInt("humanTotalWins",humanTotalWins)
+            bundle.putInt("compTotalWins",compTotalWins)
+            bundle.putBoolean("gameRuleShown",gameRuleShown)
             if (validInt){
                 val newGameIntent = Intent(this,NewGame::class.java)
                 newGameIntent.putExtras(bundle)
