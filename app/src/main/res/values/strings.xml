@@ -6,4 +6,6 @@
     <string name="score">Score</string>
     <string name="Throw">Throw</string>
     <string name="game_of_dice">Game of Dice</string>
+    <string name="compButton">compButton</string>
+    <string name="humanButton">humanButton</string>
 </resources>

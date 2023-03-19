@@ -15,51 +15,51 @@ import androidx.core.os.HandlerCompat
 
 
 class NewGame : AppCompatActivity() {
-    lateinit var hDice1 : ImageButton
-    lateinit var hDice2 : ImageButton
-    lateinit var hDice3 : ImageButton
-    lateinit var hDice4 : ImageButton
-    lateinit var hDice5 : ImageButton
-    var hDice1Resource : Int = R.drawable.throwing
-    var hDice2Resource : Int = R.drawable.throwing
-    var hDice3Resource : Int = R.drawable.throwing
-    var hDice4Resource : Int = R.drawable.throwing
-    var hDice5Resource : Int = R.drawable.throwing
-    lateinit var humanRandomNoArr : IntArray
-    var reRollArr : IntArray  = IntArray(5)
-    lateinit var Throw : Button
-    lateinit var score : Button
-    lateinit var reRoll : Button
-    lateinit var scoreBoard : TextView
-    var reRollsCount : Int = 2
+    private lateinit var hDice1 : ImageButton
+    private lateinit var hDice2 : ImageButton
+    private lateinit var hDice3 : ImageButton
+    private lateinit var hDice4 : ImageButton
+    private lateinit var hDice5 : ImageButton
+    private var hDice1Resource : Int = R.drawable.throwing
+    private var hDice2Resource : Int = R.drawable.throwing
+    private var hDice3Resource : Int = R.drawable.throwing
+    private var hDice4Resource : Int = R.drawable.throwing
+    private var hDice5Resource : Int = R.drawable.throwing
+    private lateinit var humanRandomNoArr : IntArray
+    private var reRollArr : IntArray  = IntArray(5)
+    private lateinit var Throw : Button
+    private lateinit var score : Button
+    private lateinit var reRoll : Button
+    private lateinit var scoreBoard : TextView
+    private var reRollsCount : Int = 2
 
-    var humanMainTotal : Int = 0
-    var reRollPressed : Boolean = false
+    private var humanMainTotal : Int = 0
+    private var reRollPressed : Boolean = false
 
-    lateinit var cDice1 : ImageButton
-    lateinit var cDice2 : ImageButton
-    lateinit var cDice3 : ImageButton
-    lateinit var cDice4 : ImageButton
-    lateinit var cDice5 : ImageButton
-    var cDice1Resource : Int = R.drawable.waiting2
-    var cDice2Resource : Int = R.drawable.waiting2
-    var cDice3Resource : Int = R.drawable.waiting2
-    var cDice4Resource : Int = R.drawable.waiting2
-    var cDice5Resource : Int = R.drawable.waiting2
-    lateinit var compRandomNoArr : IntArray
-    var compMainTotal :Int = 0
+    private lateinit var cDice1 : ImageButton
+    private lateinit var cDice2 : ImageButton
+    private lateinit var cDice3 : ImageButton
+    private lateinit var cDice4 : ImageButton
+    private lateinit var cDice5 : ImageButton
+    private var cDice1Resource : Int = R.drawable.waiting2
+    private var cDice2Resource : Int = R.drawable.waiting2
+    private var cDice3Resource : Int = R.drawable.waiting2
+    private var cDice4Resource : Int = R.drawable.waiting2
+    private var cDice5Resource : Int = R.drawable.waiting2
+    private lateinit var compRandomNoArr : IntArray
+    private var compMainTotal :Int = 0
 
-    var tie : Boolean = false
+    private var tie : Boolean = false
 
-    var targetValue : Int = 0
+    private var targetValue : Int = 0
 
-    lateinit var totalWin : TextView
+    private lateinit var totalWin : TextView
 
-    lateinit var mediaPlayer : MediaPlayer
+    private lateinit var mediaPlayer : MediaPlayer
 
-    var gameMode : String = ""
+    private var gameMode : String = ""
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint("MissingInflatedId", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_game)
@@ -100,16 +100,27 @@ class NewGame : AppCompatActivity() {
 //        getting the target value from the bundle object
         val bundle = intent.extras
         targetValue = bundle?.getInt("intValue",0)!!
-        gameMode = bundle?.getString("gameMode")!!
-        Toast.makeText(this, "$gameMode", Toast.LENGTH_SHORT).show()
+        gameMode = bundle.getString("gameMode")!!
+        Toast.makeText(this, gameMode, Toast.LENGTH_SHORT).show()
 
 //        initializing total win variable
         totalWin = findViewById(R.id.totalWinBoard)
 //        initializing score variables
-        var humanTotalWins = MyArraySingleton.totalScoreArr[0]
-        var compTotalWins = MyArraySingleton.totalScoreArr[1]
+        val humanTotalWins = MyArraySingleton.totalScoreArr[0]
+        val compTotalWins = MyArraySingleton.totalScoreArr[1]
 
-        totalWin.setText("H:$humanTotalWins        /        C:$compTotalWins")
+        totalWin.text = "H:$humanTotalWins        /        C:$compTotalWins"
+
+        val builder = AlertDialog.Builder(this)
+        val inflater = LayoutInflater.from(this)
+        val view1 = inflater.inflate(R.layout.game_rule_layout, null)
+        builder.setView(view1)
+        val ruleDialog = builder.create()
+        val gameRuleButton = view1.findViewById<Button>(R.id.gameRuleButton)
+        gameRuleButton.setOnClickListener{
+            ruleDialog.dismiss()
+        }
+
 
         if (savedInstanceState != null) {
             humanRandomNoArr = savedInstanceState.getIntArray("Human_Random_No_Arr")!!
@@ -150,6 +161,10 @@ class NewGame : AppCompatActivity() {
             scoreBoard.text = savedInstanceState.getString("Score_Board")
             scoreBoard.setTextColor(savedInstanceState.getInt("Score_Board_Color"))
 
+        }
+        if(!MyArraySingleton.gameRuleShown){
+            ruleDialog.show()
+            MyArraySingleton.toggleGameRule()
         }
     }
 
@@ -240,22 +255,12 @@ class NewGame : AppCompatActivity() {
         cDice5.setImageResource(getImage(compRandomNoArr[4]))
         cDice5Resource = getImage(compRandomNoArr[4])
     }
-    private fun getRandomHumanDiceNumber() : Int {
-//        var randomInt: Int
-//        do {
-//            randomInt = (1..6).random()
-//        } while (humanRandomNoArr.count { it == randomInt } >= 2)
-        var randomInt = (1..6).random()
-        return randomInt
+    private fun getRandomHumanDiceNumber(): Int {
+        return (1..6).random()
     }
 
-    private fun getRandomCompDiceNumber() : Int {
-//        var randomInt: Int
-//        do {
-//            randomInt = (1..6).random()
-//        } while (compRandomNoArr.count { it == randomInt } >= 2)
-        var randomInt = (1..6).random()
-        return randomInt
+    private fun getRandomCompDiceNumber(): Int {
+        return (1..6).random()
     }
 
     private fun getImage(randomInt:Int):Int{
@@ -387,38 +392,100 @@ class NewGame : AppCompatActivity() {
         reRoll.isEnabled = false
         score.isEnabled = false
         reRollsCount -= 1
-        var reRollText : String = "$reRollsCount - REROLL"
-        reRoll.setText(reRollText)
+        val reRollText : String = "$reRollsCount - REROLL"
+        reRoll.text = reRollText
 
     }
 
     fun humanImg1Clicked(view: View) {
-        hDice1.setImageResource(getImageWithSelection(humanRandomNoArr[0]))
-        hDice1Resource = getImageWithSelection(humanRandomNoArr[0])
-        reRollArr[0] = 1
+        val targetNumber = 1
+        val count = reRollArr.count { it == targetNumber }
+        if (reRollArr[0] == 1){
+            hDice1.setImageResource(getImage(humanRandomNoArr[0]))
+            hDice1Resource = getImage(humanRandomNoArr[0])
+            reRollArr[0] = 0
+        }else{
+            if(count == 4){
+                Toast.makeText(this, "Only maximum 4 dices can be selected.", Toast.LENGTH_SHORT).show()
+            }else{
+                hDice1.setImageResource(getImageWithSelection(humanRandomNoArr[0]))
+                hDice1Resource = getImageWithSelection(humanRandomNoArr[0])
+                reRollArr[0] = 1
+            }
+        }
     }
     fun humanImg2Clicked(view: View) {
-        hDice2.setImageResource(getImageWithSelection(humanRandomNoArr[1]))
-        hDice2Resource = getImageWithSelection(humanRandomNoArr[1])
-        reRollArr[1] = 1
+        val targetNumber = 1
+        val count = reRollArr.count { it == targetNumber }
+        if(reRollArr[1] == 1){
+            hDice2.setImageResource(getImage(humanRandomNoArr[1]))
+            hDice2Resource = getImage(humanRandomNoArr[1])
+            reRollArr[1] = 0
+
+        }else{
+            if(count == 4){
+                Toast.makeText(this, "Only maximum 4 dices can be selected.", Toast.LENGTH_SHORT).show()
+            }else{
+                hDice2.setImageResource(getImageWithSelection(humanRandomNoArr[1]))
+                hDice2Resource = getImageWithSelection(humanRandomNoArr[1])
+                reRollArr[1] = 1
+            }
+        }
     }
     fun humanImg3Clicked(view: View) {
-        hDice3.setImageResource(getImageWithSelection(humanRandomNoArr[2]))
-        hDice3Resource = getImageWithSelection(humanRandomNoArr[2])
-        reRollArr[2] = 1
+        val targetNumber = 1
+        val count = reRollArr.count { it == targetNumber }
+        if(reRollArr[2] == 1){
+            hDice3.setImageResource(getImage(humanRandomNoArr[2]))
+            hDice3Resource = getImage(humanRandomNoArr[2])
+            reRollArr[2] = 0
+        }else{
+            if(count == 4){
+                Toast.makeText(this, "Only maximum 4 dices can be selected.", Toast.LENGTH_SHORT).show()
+            }else{
+                hDice3.setImageResource(getImageWithSelection(humanRandomNoArr[2]))
+                hDice3Resource = getImageWithSelection(humanRandomNoArr[2])
+                reRollArr[2] = 1
+            }
+        }
     }
     fun humanImg4Clicked(view: View) {
-        hDice4.setImageResource(getImageWithSelection(humanRandomNoArr[3]))
-        hDice4Resource = getImageWithSelection(humanRandomNoArr[3])
-        reRollArr[3] = 1
+        val targetNumber = 1
+        val count = reRollArr.count { it == targetNumber }
+        if(reRollArr[3] == 1 ){
+            hDice4.setImageResource(getImage(humanRandomNoArr[3]))
+            hDice4Resource = getImage(humanRandomNoArr[3])
+            reRollArr[3] = 0
+
+        }else{
+            if(count == 4){
+                Toast.makeText(this, "Only maximum 4 dices can be selected.", Toast.LENGTH_SHORT).show()
+            }else{
+                hDice4.setImageResource(getImageWithSelection(humanRandomNoArr[3]))
+                hDice4Resource = getImageWithSelection(humanRandomNoArr[3])
+                reRollArr[3] = 1
+            }
+        }
     }
     fun humanImg5Clicked(view: View) {
-        hDice5.setImageResource(getImageWithSelection(humanRandomNoArr[4]))
-        hDice5Resource = getImageWithSelection(humanRandomNoArr[4])
-        reRollArr[4] = 1
+        val targetNumber = 1
+        val count = reRollArr.count { it == targetNumber }
+        if(reRollArr[4] == 1){
+            hDice5.setImageResource(getImage(humanRandomNoArr[4]))
+            hDice5Resource = getImage(humanRandomNoArr[4])
+            reRollArr[4] = 0
+        }else{
+            if(count == 4){
+                Toast.makeText(this, "Only maximum 4 dices can be selected.", Toast.LENGTH_SHORT).show()
+            }else{
+                hDice5.setImageResource(getImageWithSelection(humanRandomNoArr[4]))
+                hDice5Resource = getImageWithSelection(humanRandomNoArr[4])
+                reRollArr[4] = 1
+            }
+        }
     }
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint("MissingInflatedId", "SetTextI18n")
     fun scoreButtonClicked(view: View) {
         if(reRollsCount == 2){
             if(gameMode == "hard"){
@@ -441,8 +508,8 @@ class NewGame : AppCompatActivity() {
         }
 
         reRollsCount = 2
-        var reRollText : String = "$reRollsCount - REROLL"
-        reRoll.setText(reRollText)
+        val reRollText : String = "$reRollsCount - REROLL"
+        reRoll.text = reRollText
 
         humanMainTotal += humanRandomNoArr.sum()
 
@@ -456,7 +523,7 @@ class NewGame : AppCompatActivity() {
             scoreBoard.setTextColor(Color.RED)
         }
 
-        scoreBoard.setText("H:$humanMainTotal        -        C:$compMainTotal")
+        scoreBoard.text = "H:$humanMainTotal        -        C:$compMainTotal"
 
         var gameOver = false
 
@@ -465,38 +532,38 @@ class NewGame : AppCompatActivity() {
         val view1 = inflater.inflate(R.layout.final_result_layout, null)
         builder.setView(view1)
         val dialog = builder.create()
-        var title = view1.findViewById<TextView>(R.id.finalTitle)
-        var message = view1.findViewById<TextView>(R.id.finalMessage)
-        var back = view1.findViewById<Button>(R.id.finalButton)
+        val title = view1.findViewById<TextView>(R.id.finalTitle)
+        val message = view1.findViewById<TextView>(R.id.finalMessage)
+        val back = view1.findViewById<Button>(R.id.finalButton)
 
 
         if(humanMainTotal >= targetValue && compMainTotal >= targetValue){
             if(humanMainTotal > compMainTotal){
-                title.setText("You Win!")
+                title.text = "You Win!"
                 title.setTextColor(Color.GREEN)
-                message.setText("Congratulations, you have reached more than $targetValue points!")
+                message.text = "Congratulations, you have reached more than $targetValue points!"
                 MyArraySingleton.increHumanValue()
                 gameOver = true
             }else if (humanMainTotal == compMainTotal){
                 tie = true
                 Toast.makeText(this, "Match tied throw again", Toast.LENGTH_SHORT).show()
             }else{
-                title.setText("You Lose!")
+                title.text = "You Lose!"
                 title.setTextColor(Color.RED)
-                message.setText("Better luck next time!!")
+                message.text = "Better luck next time!!"
                 MyArraySingleton.increCompValue()
                 gameOver = true
             }
         }else if(humanMainTotal>= targetValue){
-            title.setText("You Win!")
+            title.text = "You Win!"
             title.setTextColor(Color.GREEN)
-            message.setText("Congratulations, you have reached more than $targetValue points!")
+            message.text = "Congratulations, you have reached more than $targetValue points!"
             MyArraySingleton.increHumanValue()
             gameOver = true
         }else if(compMainTotal >= targetValue){
-            title.setText("You Lose!")
+            title.text = "You Lose!"
             title.setTextColor(Color.RED)
-            message.setText("Better luck next time!!")
+            message.text = "Better luck next time!!"
             MyArraySingleton.increCompValue()
             gameOver = true
         }
@@ -559,12 +626,11 @@ class NewGame : AppCompatActivity() {
     }
 
     private fun compReRoll(){
-        var bool = compDecisionOnReRoll()
-        Toast.makeText(this, "easy mode", Toast.LENGTH_SHORT).show()
+        val bool = compDecisionOnReRoll()
         if(bool){
-            var compReRollArr = IntArray(5)
+            val compReRollArr = IntArray(5)
             for (i in compReRollArr.indices){
-                var decision = (0..1).random()
+                val decision = (0..1).random()
                 compReRollArr[i] = decision
             }
             for ( i in compReRollArr.indices){
@@ -596,13 +662,24 @@ class NewGame : AppCompatActivity() {
 
     }
 
+/* For the efficient strategy the compReRollStrategy function is called. The strategy is it checks
+   whether the human total is greater than or equal to computers total if so it will keep all
+   the dice images that are greater than 5 and re-roll others. If the human total is less than the
+   computer total then all the dice images that are greater than the 4 are kept and other dice are
+   rerolled*/
     private fun compReRollStrategy(){
-        Toast.makeText(this, "hard mode", Toast.LENGTH_SHORT).show()
-        var compReRollArr = IntArray(5)
+        val compReRollArr = IntArray(5)
         for ( i in compRandomNoArr.indices){
-            if(compRandomNoArr[i] < 4){
-                compReRollArr[i] = 1
+            if(humanMainTotal >= compMainTotal){
+                if(compRandomNoArr[i] < 5){
+                    compReRollArr[i] = 1
+                }
+            }else{
+                if(compRandomNoArr[i] < 4){
+                    compReRollArr[i] = 1
+                }
             }
+
         }
         for ( i in compReRollArr.indices){
             if(compReRollArr[i] == 1){

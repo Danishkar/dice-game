@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.Window
+
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -15,7 +15,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
-    lateinit var mediaPlayer : MediaPlayer
+    private lateinit var mediaPlayer : MediaPlayer
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         val defaultButton = view1.findViewById<Button>(R.id.defaultButton)
         val errorMessage = view1.findViewById<TextView>(R.id.defaultErrorMessage)
         val defaultDialog = builder.create()
-        var validInt : Boolean = false
+        var validInt = false
         defaultDialog.show()
 
         val builder2 = AlertDialog.Builder(this)
@@ -60,27 +60,25 @@ class MainActivity : AppCompatActivity() {
         var defaultValue : Int = 0
         defaultButton.setOnClickListener {
             // Get the text from the edit text
-            errorMessage.setText("")
+            errorMessage.text = ""
             val userText = editText.text.toString()
-            var userInt = userText.toIntOrNull()
+            val userInt = userText.toIntOrNull()
             if(userText == ""){
                 defaultValue = 101
                 validInt = true
                 defaultDialog.dismiss()
-
+                modeDialog.show()
             }else{
                 if (userInt == null) {
-                    errorMessage.setText("Please enter a valid integer")
+                    errorMessage.text = "Please enter a valid integer"
                     errorMessage.setTextColor(ContextCompat.getColor(this, R.color.red))
                 } else {
-                    if (userInt != null) {
-                        defaultValue = userInt
-                        validInt = true
-                        defaultDialog.dismiss()
-                    }
+                    defaultValue = userInt
+                    validInt = true
+                    defaultDialog.dismiss()
+                    modeDialog.show()
                 }
             }
-            modeDialog.show()
         }
         easyButton.setOnClickListener{
             val bundle = Bundle()
@@ -91,6 +89,7 @@ class MainActivity : AppCompatActivity() {
                 newGameIntent.putExtras(bundle)
                 startActivity(newGameIntent)
             }
+            modeDialog.dismiss()
         }
         hardButton.setOnClickListener{
             val bundle = Bundle()
@@ -101,6 +100,7 @@ class MainActivity : AppCompatActivity() {
                 newGameIntent.putExtras(bundle)
                 startActivity(newGameIntent)
             }
+            modeDialog.dismiss()
         }
 
     }
