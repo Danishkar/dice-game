@@ -87,7 +87,7 @@ class NewGame : AppCompatActivity() {
 //        initializing reRoll button
         reRoll = findViewById(R.id.reRolls)
         reRoll.isEnabled = false
-//        initialiZing score board
+//        initializing score board
         scoreBoard = findViewById(R.id.scoreBoard)
 //        making the human images not clickable
         toggleFunctionalityOfHumanImage(false)
@@ -106,7 +106,7 @@ class NewGame : AppCompatActivity() {
         val bundle = intent.extras
         targetValue = bundle?.getInt("intValue",0)!!
         gameMode = bundle.getString("gameMode")!!
-        Toast.makeText(this, gameMode, Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this, gameMode, Toast.LENGTH_SHORT).show()
 
 //        initializing total win variable
         totalWin = findViewById(R.id.totalWinBoard)
@@ -119,6 +119,7 @@ class NewGame : AppCompatActivity() {
 
         totalWin.text = "H:$humanTotalWins        /        C:$compTotalWins"
 
+//        creating popup window for the game rules
         val builder = AlertDialog.Builder(this)
         val inflater = LayoutInflater.from(this)
         val view1 = inflater.inflate(R.layout.game_rule_layout, null)
@@ -129,7 +130,7 @@ class NewGame : AppCompatActivity() {
             ruleDialog.dismiss()
         }
 
-
+//        retreving the variable state on orientation changes
         if (savedInstanceState != null) {
             humanRandomNoArr = savedInstanceState.getIntArray("Human_Random_No_Arr")!!
             compRandomNoArr = savedInstanceState.getIntArray("Computer_Random_No_Arr")!!
@@ -172,12 +173,14 @@ class NewGame : AppCompatActivity() {
             gameRuleShown = savedInstanceState.getBoolean("Game_Rule_Shown")
 
         }
+//        To show the game rules only once
         if(!gameRuleShown){
             ruleDialog.show()
             gameRuleShown = !gameRuleShown
         }
     }
 
+//        Storing the variable state on orientation changes
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putIntArray("Human_Random_No_Arr",humanRandomNoArr)
@@ -216,6 +219,7 @@ class NewGame : AppCompatActivity() {
 
     }
 
+//    function to toggle the clicking functionality of the human images
     private fun toggleFunctionalityOfHumanImage(bool : Boolean){
         hDice1.isEnabled = bool
         hDice2.isEnabled = bool
@@ -224,6 +228,7 @@ class NewGame : AppCompatActivity() {
         hDice5.isEnabled = bool
     }
 
+//    function to roll the human dice
     private fun rollHumanDice() {
         humanRandomNoArr[0] = getRandomHumanDiceNumber()
         hDice1.setImageResource(getImage(humanRandomNoArr[0]))
@@ -246,6 +251,7 @@ class NewGame : AppCompatActivity() {
         hDice5Resource = getImage(humanRandomNoArr[4])
     }
 
+//    function to roll the computer dice
     private fun rollCompDice() {
         compRandomNoArr[0] = getRandomCompDiceNumber()
         cDice1.setImageResource(getImage(compRandomNoArr[0]))
@@ -267,14 +273,16 @@ class NewGame : AppCompatActivity() {
         cDice5.setImageResource(getImage(compRandomNoArr[4]))
         cDice5Resource = getImage(compRandomNoArr[4])
     }
+
+//    functions to get random no for human and computer dices.
     private fun getRandomHumanDiceNumber(): Int {
         return (1..6).random()
     }
-
     private fun getRandomCompDiceNumber(): Int {
         return (1..6).random()
     }
 
+//    function to get equivalent image for the random number
     private fun getImage(randomInt:Int):Int{
         val drawableResource = when (randomInt) {
             1 -> R.drawable.die_face_1
@@ -287,6 +295,7 @@ class NewGame : AppCompatActivity() {
         return drawableResource
     }
 
+//    function to get equivalent selected image for the random number
     private fun getImageWithSelection(randomInt:Int):Int{
         val drawableResource = when (randomInt) {
             1 -> R.drawable.die_face_1_selected
@@ -298,10 +307,12 @@ class NewGame : AppCompatActivity() {
         }
         return drawableResource
     }
+
+//    function when the throw button is pressed
     fun throwButtonClicked(view: View) {
         if (reRollPressed){
             if(gameMode == "hard"){
-//            new computer strategy
+//            new computer strategy (Optimum)
                 compReRollStrategy()
             }else{
 //            for the comp player strategy(Random)
@@ -392,7 +403,7 @@ class NewGame : AppCompatActivity() {
         }
     }
 
-
+//    function when the reRoll button is clicked
     fun reRollsButtonClicked(view: View) {
 
         reRollArr = IntArray(5)
@@ -409,6 +420,7 @@ class NewGame : AppCompatActivity() {
 
     }
 
+//    function when the human button 1 is clicked
     fun humanImg1Clicked(view: View) {
         val targetNumber = 1
         val count = reRollArr.count { it == targetNumber }
@@ -426,6 +438,8 @@ class NewGame : AppCompatActivity() {
             }
         }
     }
+
+//    function when the human button 2 is clicked
     fun humanImg2Clicked(view: View) {
         val targetNumber = 1
         val count = reRollArr.count { it == targetNumber }
@@ -444,6 +458,8 @@ class NewGame : AppCompatActivity() {
             }
         }
     }
+
+//    function when the human button 3 is clicked
     fun humanImg3Clicked(view: View) {
         val targetNumber = 1
         val count = reRollArr.count { it == targetNumber }
@@ -461,6 +477,8 @@ class NewGame : AppCompatActivity() {
             }
         }
     }
+
+//    function when the human button 4 is clicked
     fun humanImg4Clicked(view: View) {
         val targetNumber = 1
         val count = reRollArr.count { it == targetNumber }
@@ -479,6 +497,8 @@ class NewGame : AppCompatActivity() {
             }
         }
     }
+
+//    function when the human button 5 is clicked
     fun humanImg5Clicked(view: View) {
         val targetNumber = 1
         val count = reRollArr.count { it == targetNumber }
@@ -497,6 +517,7 @@ class NewGame : AppCompatActivity() {
         }
     }
 
+//    function when the score button is clicked
     @SuppressLint("MissingInflatedId", "SetTextI18n")
     fun scoreButtonClicked(view: View) {
         if(reRollsCount == 2){
@@ -590,12 +611,14 @@ class NewGame : AppCompatActivity() {
                 val mainIntent = Intent(this, MainActivity::class.java)
                 mainIntent.putExtras(bundle)
                 startActivity(mainIntent)
+                dialog.dismiss()
                 finish()
             }
             dialog.setOnCancelListener {
                 val mainIntent = Intent(this, MainActivity::class.java)
                 mainIntent.putExtras(bundle)
                 startActivity(mainIntent)
+                dialog.dismiss()
                 finish()
             }
 
@@ -632,6 +655,8 @@ class NewGame : AppCompatActivity() {
 
         }, 350)
     }
+
+//    function to check if the computer wants to randomly reRoll or not
     private fun compDecisionOnReRoll():Boolean{
         var bool : Boolean
         var decision = (0..1).random()
@@ -644,6 +669,7 @@ class NewGame : AppCompatActivity() {
         return bool
     }
 
+//    function to decide which dices it wants to randomly reRoll
     private fun compReRoll(){
         val bool = compDecisionOnReRoll()
         if(bool){
@@ -682,22 +708,30 @@ class NewGame : AppCompatActivity() {
     }
 
 /* For the efficient strategy the compReRollStrategy function is called. The strategy is it checks
-   whether the human total is greater than or equal to computers total if so it will keep all
-   the dice images that are greater than 5 and re-roll others. If the human total is less than the
-   computer total then all the dice images that are greater than the 4 are kept and other dice are
-   rerolled*/
+   whether the human total is greater than or equal to computers total if so it finds the difference of the
+   human total and computer total and add 15 to it and store this value to the difference variable. If
+   computer total is greater then it find the difference of the computer total and human total and store
+   it to the difference variable. Using an if condition it check if the difference is less than or equal to 10
+   then using the reRollArrChanger function it assigns the value 1 to the compReRollArr for the position where
+   the dice number is less than 3. If the difference is less than or equal to 20 then using the reRollArrChanger
+   function it assigns the value 1 to the compReRollArr for the position where the dice number is less than 4.
+   If the difference is less than or equal to 25 then using the reRollArrChanger function it assigns the value 1
+   to the compReRollArr for the position where the dice number is less than 5. After the changes to the compReRollArr,
+   for each position where it is one those dices will be randomly rerolled again.*/
     private fun compReRollStrategy(){
-        val compReRollArr = IntArray(5)
-        for ( i in compRandomNoArr.indices){
-            if(humanMainTotal >= compMainTotal){
-                if(compRandomNoArr[i] < 5){
-                    compReRollArr[i] = 1
-                }
-            }else{
-                if(compRandomNoArr[i] < 4){
-                    compReRollArr[i] = 1
-                }
-            }
+        var difference = 0
+        if (humanMainTotal >= compMainTotal){
+            difference = humanMainTotal - compMainTotal + 15
+        }else{
+            difference = compMainTotal - humanMainTotal
+        }
+        var compReRollArr = IntArray(5)
+        if(difference <= 10){
+            compReRollArr = reRollArrChanger(compReRollArr,3)
+        }else if(difference <= 20){
+            compReRollArr = reRollArrChanger(compReRollArr,4)
+        }else if(difference <= 25){
+            compReRollArr = reRollArrChanger(compReRollArr,5)
         }
         for ( i in compReRollArr.indices){
             if(compReRollArr[i] == 1){
@@ -724,6 +758,14 @@ class NewGame : AppCompatActivity() {
                 }
             }
         }
+    }
+    private fun reRollArrChanger(compReRollArr:IntArray, value:Int):IntArray{
+        for ( i in compRandomNoArr.indices){
+            if(compRandomNoArr[i] < value){
+                compReRollArr[i] = 1
+            }
+        }
+        return compReRollArr
     }
 
     override fun onPause() {
