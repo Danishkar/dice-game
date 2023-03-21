@@ -46,7 +46,6 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-
     @SuppressLint("MissingInflatedId")
     fun newGameClicked(view: View) {
         val builder = AlertDialog.Builder(this)
